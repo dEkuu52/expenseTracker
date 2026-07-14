@@ -1,7 +1,7 @@
 import sqlite3
 
-Connection = sqlite3.connect('accounts.db')
-cursor = Connection.cursor()
+connection = sqlite3.connect('accounts.db')
+cursor = connection.cursor()
 
 cursor.execute('''
 PRAGMA foreign_keys = ON;
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 )
 ''')
 
-Connection.commit()
+connection.commit()
 
 class AddInData:
     def __init__(self, account_name, balance):
@@ -49,17 +49,37 @@ class AddInData:
             "INSERT INTO accounts(account_name, balance) VALUES(?, ?)",
             (self.account_name, self.balance)
         )
-        Connection.commit()
+        connection.commit()
+
+class GetInAcc(AddInData):
+    def __init__(self):
+        super().__init__(account_name=None, balance=None)
+    def get_all_acc(self):
+        cursor.execute('SELECT * FROM accounts')
+        return cursor
+    connection.commit()
 
 class AddInCategory:
-    def __init__(self, category_name, type):
+    def __init__(self, account_id, category_name, type):
+        self.account_id = account_id
         self.category_name = category_name
         self.type = type
     def save_to_db(self):
         cursor.execute(
-            "INSERT INTO categories(name, type) VALUES(?, ?)",(self.category_name, self.type)
+            "INSERT INTO categories(id_account,name, type) VALUES(?,?,?)",(self.account_id,self.category_name, self.type)
         )
-        Connection.commit()
+        connection.commit()
+
+class GetInCategory(AddInCategory):
+    def __init__(self):
+        super().__init__(account_id=None,category_name=None, type=None)
+    def get_categories_id_account(self):
+        cursor.execute('SELECT id,name, type FROM categories WHERE id_account=?',(self.account_id,))
+        return cursor
+    def get_all_category(self):
+        cursor.execute('SELECT * FROM categories')
+        return cursor
+    connection.commit()
 
 class Transaction:
     def __init__(self, account_id, category_id, amount, description, date):
@@ -68,14 +88,6 @@ class Transaction:
         self.amount = amount
         self.description = description
         self.date = date
-
-class GetInAcc:
-    def __init__(self):
-        pass
-    def get_all_acc(self):
-        cursor.execute('SELECT * FROM accounts')
-        return cursor
-    Connection.commit()
 
 class DeleteInData:
     def __init__(self, account_id, category_id):
@@ -88,13 +100,18 @@ class DeleteInData:
                 (self.account_id,)
             )
             cursor.execute(
+                "DELETE FROM categories WHERE id_account = ?",
+                (self.account_id,)
+            )
+            cursor.execute(
                 "DELETE FROM accounts WHERE id = ?",
                 (self.account_id,)
             )
         elif self.category_id is not None:
             cursor.execute(
-                "DELETE FROM categories WHERE id = ?", (self.category_id,)
+                "DELETE FROM categories WHERE id = ?",
+                (self.category_id,)
             )
 
-    Connection.commit()
+        connection.commit()
 

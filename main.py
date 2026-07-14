@@ -2,6 +2,8 @@ import database
 import matplotlib
 from prettytable import from_db_cursor
 
+from database import DeleteInData
+
 
 # ----------- Main func -----------
 def main_func():
@@ -15,6 +17,8 @@ def main_func():
         add_category()
     elif choice == '3':
         get_acc()
+    elif choice =='6':
+        delete_acc()
 
 
 # ----------- Welcome func -----------
@@ -27,7 +31,7 @@ def welcome_message():
         print('File not found')
 
 
-# ------------ Create acc func ------------
+# ------------ 1. Create acc func ------------
 def create_new_acc():
     all_entries = {}
 
@@ -48,18 +52,20 @@ def create_new_acc():
         break
     return all_entries
 
-
-# ------------ Get acc func ------------
-def get_acc():
-    db_cursor = database.GetInAcc().get_all_acc()
-    print(from_db_cursor(db_cursor))
-
-
-# ------------ Add category func ------------
+# ------------ 2. Add category func ------------
 def add_category():
     all_category_entries = {}
 
     while True:
+        # get_acc
+        db_cursor_acc = database.GetInAcc().get_all_acc()
+        print(from_db_cursor(db_cursor_acc))
+
+        account_id = input('Enter your account id(or "Exit"): ')
+        if account_id.strip().lower() == 'exit':
+            print("Returning to main menu...")
+            main_func()
+
         category_name = input('Enter your category name: ')
 
         if category_name.strip().lower() == 'exit':
@@ -67,17 +73,37 @@ def add_category():
             main_func()
 
         type_category = input('Enter your category type: ')
+
+        if type_category.strip().lower() == 'exit':
+            print("Returning to main menu...")
+            main_func()
         print('Once you have added all the categories you need, you can enter "Exit" to return to the main menu.')
 
-        new_entry = database.AddInCategory(category_name=category_name, type=type_category)
+        new_entry = database.AddInCategory(
+            account_id=int(account_id),
+            category_name=category_name,
+            type=type_category,
+        )
         new_entry.save_to_db()
         all_category_entries[category_name] = new_entry
 
+# ------------ 3. Get acc func ------------
+def get_acc():
+    db_cursor = database.GetInAcc().get_all_acc()
+    print(from_db_cursor(db_cursor))
+    db_cursor_cat = database.GetInCategory().get_all_category()
+    print(from_db_cursor(db_cursor_cat))
 
-# ------------ Delete acc ------------
+# ------------ 6. Delete acc ------------
 def delete_acc():
     get_acc()
-    selected_acc = input('Enter the number of the account you want to delete: ')
+    selected_acc = input('Enter the id of the account you want to delete: ')
+
+    id_delete_db = int(selected_acc)
+
+    deleter = database.DeleteInData(account_id=id_delete_db, category_id=None)
+    deleter.delete_from_db()
+    print('Account has been deleted.')
 
 
 if __name__ == "__main__":

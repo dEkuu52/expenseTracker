@@ -2,7 +2,6 @@ import database
 import matplotlib
 from prettytable import from_db_cursor
 
-from database import DeleteInData
 
 
 # ----------- Main func -----------
@@ -72,7 +71,7 @@ def add_category():
             print("Returning to main menu...")
             main_func()
 
-        type_category = input('Enter your category type: ')
+        type_category = input('Enter your category type (Indicate here whether this is "income" or an "expense"): ')
 
         if type_category.strip().lower() == 'exit':
             print("Returning to main menu...")

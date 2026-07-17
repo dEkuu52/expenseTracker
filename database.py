@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 )
 ''')
 
+
 connection.commit()
 
 class AddInData:
@@ -88,6 +89,45 @@ class Transaction:
         self.amount = amount
         self.description = description
         self.date = date
+    def add_transaction(self):
+        cursor.execute(
+            'SELECT type FROM categories WHERE id = ?',
+            (self.category_id,))
+
+        category_type = cursor.fetchone()[0]
+
+        cursor.execute(
+            'INSERT INTO transactions(account_id, category_id, amount, description, date) VALUES(?,?,?,?,?)',
+            (self.account_id, self.category_id, self.amount, self.description, self.date)
+        )
+
+        if category_type == 'income':
+            cursor.execute('''
+                UPDATE accounts 
+                SET balance = balance + ?
+                WHERE id = ?
+                                 ''',(self.amount, self.account_id)
+            )
+        # elif category_type == 'expense':
+        #     cursor.executescript('''
+        #     UPDATE accounts ''')
+        # connection.commit()
+    def search_transaction(self):
+        cursor.execute('''
+            SELECT
+                transactions.amount,
+                transactions.description,
+                transactions.date,
+                accounts.account_name,
+                categories.name AS category_name
+            FROM transactions
+            JOIN accounts ON transactions.account_id = accounts.id
+            JOIN categories ON transactions.category_id = categories.id
+            WHERE accounts.id = ? AND transactions.category_id = ?
+        ''', (self.account_id, self.category_id))
+
+
+        
 
 class DeleteInData:
     def __init__(self, account_id, category_id):

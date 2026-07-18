@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS transactions (
     FOREIGN KEY (category_id) REFERENCES categories(id)
 )
 ''')
-
-
 connection.commit()
 
 class AddInData:
@@ -108,10 +106,15 @@ class Transaction:
                 WHERE id = ?
                                  ''',(self.amount, self.account_id)
             )
-        # elif category_type == 'expense':
-        #     cursor.executescript('''
-        #     UPDATE accounts ''')
-        # connection.commit()
+        elif category_type == 'expense':
+            cursor.execute('''
+            UPDATE accounts 
+            SET balance = balance - ?
+            WHERE id = ?    
+            ''', (self.amount,self.account_id)
+            )
+        connection.commit()
+        print('☑️The transaction was successful.')
     def search_transaction(self):
         cursor.execute('''
             SELECT
@@ -126,8 +129,6 @@ class Transaction:
             WHERE accounts.id = ? AND transactions.category_id = ?
         ''', (self.account_id, self.category_id))
 
-
-        
 
 class DeleteInData:
     def __init__(self, account_id, category_id):
@@ -152,6 +153,6 @@ class DeleteInData:
                 "DELETE FROM categories WHERE id = ?",
                 (self.category_id,)
             )
-
         connection.commit()
+
 

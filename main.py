@@ -1,6 +1,7 @@
 import database
 import matplotlib
 from prettytable import from_db_cursor
+from datetime import datetime
 
 
 
@@ -16,6 +17,8 @@ def main_func():
         add_category()
     elif choice == '3':
         get_acc()
+    elif choice == '4':
+        add_trans()
     elif choice =='6':
         delete_acc()
 
@@ -92,6 +95,22 @@ def get_acc():
     print(from_db_cursor(db_cursor))
     db_cursor_cat = database.GetInCategory().get_all_category()
     print(from_db_cursor(db_cursor_cat))
+
+# ------------ 4. Transactions ------------
+def add_trans():
+    account_id = int(input("Enter account ID: "))
+    category_id = int(input("Enter the category ID: "))
+    amount = float(input("Enter the amount: "))
+    description = input("Enter a description: ")
+    date = input("Enter the date (YYYY-MM-DD) or press Enter for the current date: ")
+
+    if not date:
+        date = datetime.today().strftime('%Y-%m-%d')
+
+    tx_obg = database.Transaction(account_id, category_id, amount, description, date)
+    tx_obg.add_transaction()
+
+
 
 # ------------ 6. Delete acc ------------
 def delete_acc():

@@ -1,5 +1,5 @@
 import models
-import matplotlib
+import matplotlib.pyplot as plt
 from prettytable import from_db_cursor
 from datetime import datetime
 
@@ -70,6 +70,8 @@ def add_category():
         db_cursor_acc = models.GetInAcc().get_all_acc()
         print(from_db_cursor(db_cursor_acc))
 
+        print(' 🔙 If you want to return to the main menu, enter "Exit" ')
+
         account_id = input('Enter your account id(or "Exit"): ')
         if account_id.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
@@ -120,17 +122,24 @@ def get_acc_for_del():
 
 # ------------ 4. Transactions ------------
 def add_trans():
-    account_id = int(input("Enter account ID: "))
-    category_id = int(input("Enter the category ID: "))
-    amount = float(input("Enter the amount: "))
-    description = input("Enter a description: ")
-    date = input("Enter the date (YYYY-MM-DD) or press Enter for the current date: ")
+    while True:
+        print(' If you want to return to the main menu, enter "Exit" ')
+        account_id = int(input("Enter account ID: "))
+        category_id = int(input("Enter the category ID: "))
+        amount = float(input("Enter the amount: "))
+        description = input("Enter a description: ")
+        date = input("Enter the date (DD-MM-YYYY) or press Enter for the current date: ")
 
-    if not date:
-        date = datetime.today().strftime('%Y-%m-%d')
+        if not date:
+            date = datetime.today().strftime('%d-%m-%Y')
 
-    tx_obg = models.Transaction(account_id, category_id, amount, description, date)
-    tx_obg.add_transaction()
+        tx_obg = models.Transaction(account_id, category_id, amount, description, date)
+        tx_obg.add_transaction()
+
+        if account_id or category_id or amount or description or date == 'Exit':
+            print("🕗 Returning to main menu...")
+            main_func()
+
 
 
 

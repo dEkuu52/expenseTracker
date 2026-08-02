@@ -3,8 +3,16 @@ import sqlite3
 connection = sqlite3.connect('accounts.db')
 cursor = connection.cursor()
 
+# cursor.execute('''
+#     DELETE FROM sqlite_sequence;
+# ''')
+
+# cursor.execute('''
+#     DELETE FROM accounts;
+# ''')
+
 cursor.execute('''
-PRAGMA foreign_keys = ON;
+    PRAGMA foreign_keys = ON;
 ''')
 
 cursor.execute('''

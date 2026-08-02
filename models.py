@@ -1,6 +1,4 @@
-import sqlite3
 from database import cursor, connection
-
 
 class AddInData:
     def __init__(self, account_name, balance):
@@ -78,7 +76,6 @@ class Transaction:
             ''', (self.amount,self.account_id)
             )
         connection.commit()
-        print('☑️The transaction was successful.')
     def search_transaction(self):
         cursor.execute('''
             SELECT
@@ -86,13 +83,14 @@ class Transaction:
                 transactions.description,
                 transactions.date,
                 accounts.account_name,
-                categories.name AS category_name
+                categories.name
             FROM transactions
             JOIN accounts ON transactions.account_id = accounts.id
             JOIN categories ON transactions.category_id = categories.id
-            WHERE accounts.id = ? AND transactions.category_id = ?
-        ''', (self.account_id, self.category_id))
+            WHERE accounts.id = ? 
+        ''', (self.account_id,))
 
+        return cursor
 
 class DeleteInData:
     def __init__(self, account_id, category_id):
@@ -117,4 +115,16 @@ class DeleteInData:
                 "DELETE FROM categories WHERE id = ?",
                 (self.category_id,)
             )
+        connection.commit()
+
+class GraphMonth:
+    def __init__(self):
+        self.rows = []
+        self.x_data = []
+        self.y_data = []
+    def graph_month(self):
+        cursor.execute('SELECT amount, date FROM transactions')
+        self.rows = cursor.fetchall()
+        self.x_data = [row[0] for row in self.rows]
+        self.y_data = [row[1] for row in self.rows]
         connection.commit()

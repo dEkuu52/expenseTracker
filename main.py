@@ -19,7 +19,9 @@ def main_func():
         get_acc()
     elif choice == '4':
         add_trans()
-    elif choice =='6':
+    elif choice == '5':
+        all_transaction()
+    elif choice =='7':
         delete_acc()
     elif choice.strip().lower() == 'Exit':
         exit()
@@ -41,6 +43,9 @@ def create_new_acc():
 
     while True:
         name = input('Enter your account name(If you want to exit, enter "Exit"): ')
+        if name == 'Exit':
+            print("🕗 Returning to main menu...")
+            main_func()
         try:
             balance = float(input('Enter your account balance: '))
         except ValueError:
@@ -54,11 +59,9 @@ def create_new_acc():
 
         all_entries[name, balance] = new_entry
 
-        if name or balance == 'Exit':
-            print("🕗 Returning to main menu...")
-            main_func()
-            break
-    return all_entries
+
+
+    # return all_entries
 
 
 # ------------ 2. Add category func ------------
@@ -76,14 +79,12 @@ def add_category():
         if account_id.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
-            break
 
         category_name = input('Enter your category name: ')
 
         if category_name.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
-            break
 
         type_category = input('Enter your category type (Indicate here whether this is "income" or an "expense"): ')
 
@@ -124,26 +125,73 @@ def get_acc_for_del():
 def add_trans():
     while True:
         print(' If you want to return to the main menu, enter "Exit" ')
-        account_id = int(input("Enter account ID: "))
-        category_id = int(input("Enter the category ID: "))
-        amount = float(input("Enter the amount: "))
+
+        account_input = input('Enter your account id(or "Exit"): ')
+        if account_input.strip().lower() == 'exit':
+            print("🕗 Returning to main menu...")
+            main_func()
+
+        try:
+            account_id = int(account_input)
+            category_id = int(input("Enter the category ID: "))
+            amount = float(input("Enter the amount: "))
+        except ValueError:
+            print("❌ Error: ID and amount must be numbers! Please try again.")
+            continue
+
         description = input("Enter a description: ")
-        date = input("Enter the date (DD-MM-YYYY) or press Enter for the current date: ")
+        date = input("Enter the date (DD-MM-YYYY) or press Enter for current date: ").strip()
 
         if not date:
             date = datetime.today().strftime('%d-%m-%Y')
 
-        tx_obg = models.Transaction(account_id, category_id, amount, description, date)
-        tx_obg.add_transaction()
+        try:
+            tx_obg = models.Transaction(
+                account_id,
+                category_id,
+                amount,
+                description,
+                date)
+            tx_obg.add_transaction()
+            print('☑️The transaction was successful.')
+        except Exception as e:
+            print(f'❌ Failed to save the transaction: {e}')
+            continue
 
-        if account_id or category_id or amount or description or date == 'Exit':
+
+
+# ------------ 6. All Transactions ------------
+def all_transaction():
+    while True:
+        choice_acc_id = input('Enter your account id(or "Exit"): ')
+        if choice_acc_id == 'Exit':
             print("🕗 Returning to main menu...")
             main_func()
 
+        try:
+            choice_id = int(choice_acc_id)
+        except ValueError:
+            print('Please enter a valid number')
+            continue
+
+        trans_all = models.Transaction(account_id=choice_id, category_id=None,amount=0, description=None, date=None)
+        transct_acc = trans_all.search_transaction()
+
+        if not transct_acc:
+            print(f'❌ No transactions found for this {choice_acc_id}.')
+
+        print(from_db_cursor(transct_acc))
 
 
 
-# ------------ 6. Delete acc ------------
+
+# ------------ 7.Annual expenses ------------
+def annual_exp():
+    graph = models.GraphMonth()
+    plt.show()
+
+
+# ------------ 8. Delete acc ------------
 def delete_acc():
     while True:
         get_acc_for_del()

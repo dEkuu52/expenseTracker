@@ -118,13 +118,16 @@ class DeleteInData:
         connection.commit()
 
 class GraphMonth:
-    def __init__(self):
-        self.rows = []
-        self.x_data = []
-        self.y_data = []
-    def graph_month(self):
-        cursor.execute('SELECT amount, date FROM transactions')
-        self.rows = cursor.fetchall()
-        self.x_data = [row[0] for row in self.rows]
-        self.y_data = [row[1] for row in self.rows]
-        connection.commit()
+    def __init__(self, date_1, date_2):
+        self.date_1 = date_1
+        self.date_2 = date_2
+    def graph(self):
+        cursor.execute('''
+            SELECT date, SUM(amount) 
+            FROM transactions 
+            WHERE date BETWEEN ? AND ?
+            GROUP BY date
+            ORDER BY date ASC;
+        ''' , (self.date_1, self.date_2))
+
+        return cursor.fetchall()

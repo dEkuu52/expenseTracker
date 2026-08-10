@@ -3,8 +3,6 @@ import matplotlib.pyplot as plt
 from prettytable import from_db_cursor
 from datetime import datetime
 
-
-
 # ----------- Main func -----------
 def main_func():
     welcome_message()
@@ -21,11 +19,12 @@ def main_func():
         add_trans()
     elif choice == '5':
         all_transaction()
+    elif choice == '6':
+        annual_exp()
     elif choice =='7':
         delete_acc()
     elif choice.strip().lower() == 'Exit':
         exit()
-
 
 # ----------- Welcome func -----------
 def welcome_message():
@@ -43,7 +42,7 @@ def create_new_acc():
 
     while True:
         name = input('Enter your account name(If you want to exit, enter "Exit"): ')
-        if name == 'Exit':
+        if name.strip().lower() == 'Exit':
             print("🕗 Returning to main menu...")
             main_func()
         try:
@@ -58,9 +57,6 @@ def create_new_acc():
         new_entry.save_to_db()
 
         all_entries[name, balance] = new_entry
-
-
-
     # return all_entries
 
 
@@ -110,7 +106,7 @@ def get_acc():
         print(from_db_cursor(db_cursor_cat))
 
         choice = input('If you want to exit, enter "Exit": ')
-        if choice.strip().lower() == 'Exit':
+        if choice.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
 
@@ -158,9 +154,7 @@ def add_trans():
             print(f'❌ Failed to save the transaction: {e}')
             continue
 
-
-
-# ------------ 6. All Transactions ------------
+# ------------ 5. All Transactions ------------
 def all_transaction():
     while True:
         choice_acc_id = input('Enter your account id(or "Exit"): ')
@@ -182,16 +176,17 @@ def all_transaction():
 
         print(from_db_cursor(transct_acc))
 
-
-
-
-# ------------ 7.Annual expenses ------------
+# ------------ 6.Annual expenses ------------
 def annual_exp():
-    graph = models.GraphMonth()
-    plt.show()
+    while True:
+        choice_date1 = input('Enter the date: ')
+        choice_date2 = input('Enter the date: ')
+
+        x = models.GraphMonth(date_1=choice_date1, date_2=choice_date2)
+        print(from_db_cursor(x))
 
 
-# ------------ 8. Delete acc ------------
+# ------------ 7. Delete acc ------------
 def delete_acc():
     while True:
         get_acc_for_del()
@@ -203,7 +198,7 @@ def delete_acc():
         deleter.delete_from_db()
         print('☑️ Account has been deleted.')
 
-        if  selected_acc or id_delete_db == 'Exit':
+        if  selected_acc.strip().lower() == 'Exit':
             print("🕗 Returning to main menu...")
             main_func()
 

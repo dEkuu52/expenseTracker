@@ -1,4 +1,5 @@
 from database import cursor, connection
+import matplotlib.pyplot as plt
 
 class AddInData:
     def __init__(self, account_name, balance):
@@ -131,3 +132,18 @@ class GraphMonth:
         ''' , (self.date_1, self.date_2))
 
         return cursor.fetchall()
+    def show_graph(self):
+        data = self.graph()
+
+        if not data:
+            print('There are no expenses for this period.')
+
+        dates = [row[0] for row in data]
+        amounts = [row[1] for row in data]
+        plt.plot(dates, amounts)
+        plt.dateslabel = dates
+        plt.amountlabel = amounts
+        plt.title(f'expenditure for {self.date_1} to {self.date_2}')
+
+        plt.show()
+

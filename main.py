@@ -23,7 +23,7 @@ def main_func():
         annual_exp()
     elif choice =='7':
         delete_acc()
-    elif choice.strip().lower() == 'Exit':
+    elif choice.strip().lower() == 'exit':
         exit()
 
 # ----------- Welcome func -----------
@@ -45,6 +45,7 @@ def create_new_acc():
         if name.strip().lower() == 'Exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
         try:
             balance = float(input('Enter your account balance: '))
         except ValueError:
@@ -57,7 +58,6 @@ def create_new_acc():
         new_entry.save_to_db()
 
         all_entries[name, balance] = new_entry
-    # return all_entries
 
 
 # ------------ 2. Add category func ------------
@@ -75,18 +75,21 @@ def add_category():
         if account_id.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
 
         category_name = input('Enter your category name: ')
 
         if category_name.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
 
         type_category = input('Enter your category type (Indicate here whether this is "income" or an "expense"): ')
 
         if type_category.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
         print('Once you have added all the categories you need, you can enter "Exit" to return to the main menu.')
 
         new_entry = models.AddInCategory(
@@ -109,6 +112,7 @@ def get_acc():
         if choice.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
 
 
 def get_acc_for_del():
@@ -126,6 +130,7 @@ def add_trans():
         if account_input.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
 
         try:
             account_id = int(account_input)
@@ -158,9 +163,10 @@ def add_trans():
 def all_transaction():
     while True:
         choice_acc_id = input('Enter your account id(or "Exit"): ')
-        if choice_acc_id == 'Exit':
+        if choice_acc_id.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
+            break
 
         try:
             choice_id = int(choice_acc_id)
@@ -173,7 +179,6 @@ def all_transaction():
 
         if not transct_acc:
             print(f'❌ No transactions found for this {choice_acc_id}.')
-
         print(from_db_cursor(transct_acc))
 
 # ------------ 6.Annual expenses ------------
@@ -183,7 +188,9 @@ def annual_exp():
         choice_date2 = input('Enter the date: ')
 
         x = models.GraphMonth(date_1=choice_date1, date_2=choice_date2)
-        print(from_db_cursor(x))
+
+        data_gr = x.show_graph()
+        print(data_gr)
 
 
 # ------------ 7. Delete acc ------------

@@ -184,8 +184,17 @@ def all_transaction():
 # ------------ 6.Annual expenses ------------
 def annual_exp():
     while True:
-        choice_date1 = input('Enter the date: ')
-        choice_date2 = input('Enter the date: ')
+        print(' If you want to return to the main menu, enter "Exit"')
+        choice_date1 = input('Enter the start date (DD-MM-YYYY): ')
+        choice_date2 = input('Enter the end date (DD-MM-YYYY): ')
+
+        if choice_date1.strip().lower() == 'exit':
+            main_func()
+            break
+
+        if choice_date2.strip().lower() == 'exit':
+            main_func()
+            break
 
         x = models.GraphMonth(date_1=choice_date1, date_2=choice_date2)
 

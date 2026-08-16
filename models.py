@@ -140,7 +140,7 @@ class GraphMonth:
 
         dates = [row[0] for row in data]
         amounts = [row[1] for row in data]
-        plt.plot(dates, amounts)
+        plt.bar(dates, amounts)
         plt.dateslabel = dates
         plt.amountlabel = amounts
         plt.title(f'expenditure for {self.date_1} to {self.date_2}')

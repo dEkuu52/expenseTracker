@@ -1,5 +1,4 @@
 import models
-import matplotlib.pyplot as plt
 from prettytable import from_db_cursor
 from datetime import datetime
 

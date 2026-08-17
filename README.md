@@ -67,12 +67,12 @@ Below is the complete table structure with sample data from your screenshots.
 When you select option **6** (`annual_exp()`), the program generates a daily expense chart.  
 Example (period `10-08-2026` to `30-08-2026`):
 
-![Expense Chart](myplo_1t.png)  
+![Expense Chart](myplot.png)  
 *The chart shows:*
-- 10.08.2026 — 1850 ₽ (500 + 1350)  
-- 16.08.2026 — 5000 ₽  
-- 20.08.2026 — 1500 ₽  
-- 30.08.2026 — 100 ₽
+- 10.08.2026 — 1850 $ (500 + 1350)  
+- 16.08.2026 — 5000 $  
+- 20.08.2026 — 1500 $  
+- 30.08.2026 — 100 $
 
 ---
 

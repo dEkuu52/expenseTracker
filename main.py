@@ -173,7 +173,7 @@ def all_transaction():
             print('Please enter a valid number')
             continue
 
-        trans_all = models.Transaction(account_id=choice_id, category_id=None,amount=0, description=None, date=None)
+        trans_all = models.Transaction(account_id=choice_id, category_id=None, amount=0, description=None, date=None)
         transct_acc = trans_all.search_transaction()
 
         if not transct_acc:

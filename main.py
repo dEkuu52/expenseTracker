@@ -41,7 +41,7 @@ def create_new_acc():
 
     while True:
         name = input('Enter your account name(If you want to exit, enter "Exit"): ')
-        if name.strip().lower() == 'Exit':
+        if name.strip().lower() == 'exit':
             print("🕗 Returning to main menu...")
             main_func()
             break
